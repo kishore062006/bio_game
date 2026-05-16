@@ -1,0 +1,77 @@
+const colors = ["red", "green", "blue", "yellow"];
+
+let gameSequence = [];
+let userSequence = [];
+
+let level = 0;
+let started = false;
+
+const levelText = document.getElementById("level");
+const startBtn = document.getElementById("startBtn");
+
+startBtn.addEventListener("click", startGame);
+
+function startGame() {
+    if (!started) {
+        started = true;
+        level = 0;
+        gameSequence = [];
+        nextLevel();
+    }
+}
+
+function nextLevel() {
+    userSequence = [];
+    level++;
+
+    levelText.innerText = "Level " + level;
+
+    const randomColor =
+        colors[Math.floor(Math.random() * 4)];
+
+    gameSequence.push(randomColor);
+
+    flashButton(randomColor);
+}
+
+function flashButton(color) {
+    const button = document.getElementById(color);
+
+    button.classList.add("flash");
+
+    setTimeout(() => {
+        button.classList.remove("flash");
+    }, 500);
+}
+
+colors.forEach(color => {
+    const button = document.getElementById(color);
+
+    button.addEventListener("click", () => {
+        userSequence.push(color);
+
+        flashButton(color);
+
+        checkAnswer(userSequence.length - 1);
+    });
+});
+
+function checkAnswer(currentIndex) {
+
+    if (userSequence[currentIndex] === gameSequence[currentIndex]) {
+
+        if (userSequence.length === gameSequence.length) {
+
+            setTimeout(() => {
+                nextLevel();
+            }, 1000);
+        }
+
+    } else {
+
+        levelText.innerText =
+            "Game Over! Press Start";
+
+        started = false;
+    }
+}
